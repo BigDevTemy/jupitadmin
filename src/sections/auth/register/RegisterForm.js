@@ -1,41 +1,82 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { useNavigate } from 'react-router-dom';
 // material
 import { Stack, TextField, IconButton, InputAdornment } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // component
+import axios from 'axios';
 import Iconify from '../../../components/Iconify';
+
 
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
   const navigate = useNavigate();
-
+  
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('First name required'),
     lastName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Last name required'),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required'),
+    userName: Yup.string().required('Username is required'),
   });
+const register = async()=>{
+  const Baseurl = process.env.REACT_APP_ADMIN_URL
+    await axios({
+        method: "POST",
+        url: `${Baseurl}/admin/onboard/new`,
+        headers:{
+            'Content-Type':'application/json',  
+        },
+      data:JSON.stringify({email:formik.values.email,username:formik.values.userName,firstname:formik.values.firstName,lastname:formik.values.lastName})
+    })
+    .then((res)=>{
+        console.log(res.data);
+        Swal.fire({
+        title: 'Message!',
+        text: res.data.message,
+        icon: 'success',
+        confirmButtonText: 'ok'
+      });
+      setSubmitting(false)
+      
+    })
+    .catch((err)=>{
+        console.log(err.response);
+
+        Swal.fire({
+        title: 'Message!',
+        text: err.response.data,
+        icon: 'error',
+        confirmButtonText: 'ok'
+      });
+
+      setSubmitting(false)
+      
+        
+    })
+}
 
   const formik = useFormik({
     initialValues: {
       firstName: '',
       lastName: '',
       email: '',
-      password: '',
+      userName: '',
     },
     validationSchema: RegisterSchema,
     onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+      register();
+
+      // navigate('/dashboard', { replace: true });
     },
   });
 
-  const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
+  const { errors, touched, handleSubmit, isSubmitting, getFieldProps,setSubmitting } = formik;
 
   return (
     <FormikProvider value={formik}>
@@ -71,25 +112,17 @@ export default function RegisterForm() {
 
           <TextField
             fullWidth
-            autoComplete="current-password"
-            type={showPassword ? 'text' : 'password'}
-            label="Password"
-            {...getFieldProps('password')}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
-                    <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            error={Boolean(touched.password && errors.password)}
-            helperText={touched.password && errors.password}
+            autoComplete="username"
+            type="text"
+            label="Username"
+            {...getFieldProps('userName')}
+            error={Boolean(touched.userName && errors.userName)}
+            helperText={touched.userName && errors.userName}
           />
 
+
           <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-            Register
+            Onboard Admin
           </LoadingButton>
         </Stack>
       </Form>
