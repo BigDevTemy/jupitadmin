@@ -24,7 +24,7 @@ export default function LoginForm() {
   });
 
   const login = async ()=>{
-    let Base_url = process.env.REACT_APP_ADMIN_URL
+    let Base_url = process.env.REACT_APP_ADMIN_URL_LOCAL
     await axios({
         method: "POST",
         url: `${Base_url}/admin/checklogin`,
