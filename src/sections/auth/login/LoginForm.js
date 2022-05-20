@@ -25,6 +25,7 @@ export default function LoginForm() {
   });
 
   const login = async ()=>{
+    console.log(formik.values.email)
     const Baseurl = process.env.REACT_APP_ADMIN_URL
     await axios({
         method: "POST",
@@ -32,7 +33,7 @@ export default function LoginForm() {
         headers:{
             'Content-Type':'application/json',  
         },
-      data:JSON.stringify({})
+      data:JSON.stringify({email:formik.values.email,password:formik.values.password})
     })
     .then((res)=>{
         console.log(res.data)
@@ -59,6 +60,7 @@ export default function LoginForm() {
       //   icon: 'success',
       //   confirmButtonText: 'ok'
       // });
+      console.log(formik.values)
       login();
 
      
