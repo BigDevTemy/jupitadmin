@@ -23,6 +23,26 @@ export default function LoginForm() {
     password: Yup.string().required('Password is required'),
   });
 
+  const login = async ()=>{
+    let Base_url = process.env.REACT_APP_ADMIN_URL
+    await axios({
+        method: "POST",
+        url: `${Base_url}/admin/checklogin`,
+        headers:{
+            'Content-Type':'application/json',  
+        },
+      data:JSON.stringify({})
+    })
+    .then((res)=>{
+        console.log(res.data)
+      
+    })
+    .catch((err)=>{
+        console.log(err.response)
+        
+    })
+  }
+
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -32,12 +52,13 @@ export default function LoginForm() {
     validationSchema: LoginSchema,
     onSubmit: () => {
 
-      Swal.fire({
-        title: 'Message!',
-        text: 'Success',
-        icon: 'success',
-        confirmButtonText: 'ok'
-      });
+      // Swal.fire({
+      //   title: 'Message!',
+      //   text: 'Success',
+      //   icon: 'success',
+      //   confirmButtonText: 'ok'
+      // });
+      login();
 
       navigate('/dashboard', { replace: true });
     },
