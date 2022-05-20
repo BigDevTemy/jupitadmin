@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';
-
+import mylogo from './images/logo.png'
 // ----------------------------------------------------------------------
 
 Logo.propTypes = {
@@ -63,5 +63,5 @@ export default function Logo({ disabledLink = false, sx }) {
     return <>{logo}</>;
   }
 
-  return <RouterLink to="/">{logo}</RouterLink>;
+  return <RouterLink to="/"><img src={mylogo} alt="logo"/></RouterLink>;
 }

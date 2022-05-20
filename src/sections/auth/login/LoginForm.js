@@ -1,12 +1,15 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
 import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // component
+
 import Iconify from '../../../components/Iconify';
+
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +31,14 @@ export default function LoginForm() {
     },
     validationSchema: LoginSchema,
     onSubmit: () => {
+      
+      Swal.fire({
+        title: 'Message!',
+        text: 'Success',
+        icon: 'success',
+        confirmButtonText: 'ok'
+      })
+
       navigate('/dashboard', { replace: true });
     },
   });
