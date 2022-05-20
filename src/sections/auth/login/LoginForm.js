@@ -31,13 +31,13 @@ export default function LoginForm() {
     },
     validationSchema: LoginSchema,
     onSubmit: () => {
-      
+
       Swal.fire({
         title: 'Message!',
         text: 'Success',
         icon: 'success',
         confirmButtonText: 'ok'
-      })
+      });
 
       navigate('/dashboard', { replace: true });
     },
