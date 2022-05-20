@@ -37,11 +37,24 @@ export default function LoginForm() {
     })
     .then((res)=>{
         console.log(res.data)
-        setSubmitting(false)
+        setSubmitting(false);
+        Swal.fire({
+        title: 'Message!',
+        text: res.data.message,
+        icon: 'success',
+        confirmButtonText: 'ok'
+      });
       
     })
     .catch((err)=>{
-        console.log(err.response)
+        console.log(err.response);
+        setSubmitting(false);
+        Swal.fire({
+          title: 'Error!',
+          text: err.response.data.message,
+          icon: 'error',
+          confirmButtonText: 'ok'
+        });
         
     })
   }
@@ -55,12 +68,7 @@ export default function LoginForm() {
     validationSchema: LoginSchema,
     onSubmit: () => {
 
-      // Swal.fire({
-      //   title: 'Message!',
-      //   text: 'Success',
-      //   icon: 'success',
-      //   confirmButtonText: 'ok'
-      // });
+      
      
       login();
 

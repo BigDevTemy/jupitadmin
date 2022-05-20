@@ -32,7 +32,7 @@ export default function Router() {
         // { path: '/admin', element: <Navigate to="/dashboard/app" /> },
         { path: '/', element: <Login /> },
         { path: 'register', element: <Register /> },
-        { path: '404', element: <NotFound /> },
+        // { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
     },
