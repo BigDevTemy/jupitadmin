@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
@@ -24,10 +25,10 @@ export default function LoginForm() {
   });
 
   const login = async ()=>{
-    let Base_url = process.env.REACT_APP_ADMIN_URL_LOCAL
+    const Baseurl = process.env.REACT_APP_ADMIN_URL
     await axios({
         method: "POST",
-        url: `${Base_url}/admin/checklogin`,
+        url: `${Baseurl}/admin/checklogin`,
         headers:{
             'Content-Type':'application/json',  
         },
@@ -60,7 +61,7 @@ export default function LoginForm() {
       // });
       login();
 
-      navigate('/dashboard', { replace: true });
+     
     },
   });
 
