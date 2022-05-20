@@ -35,7 +35,7 @@ const register = async()=>{
       data:JSON.stringify({email:formik.values.email,username:formik.values.userName,firstname:formik.values.firstName,lastname:formik.values.lastName})
     })
     .then((res)=>{
-        console.log(res.data);
+        console.log('data',res.data);
         Swal.fire({
         title: 'Message!',
         text: res.data.message,

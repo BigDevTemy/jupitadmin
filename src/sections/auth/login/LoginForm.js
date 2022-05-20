@@ -20,7 +20,7 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    username: Yup.string().required('Username is required'),
     password: Yup.string().required('Password is required'),
   });
 
@@ -33,10 +33,11 @@ export default function LoginForm() {
         headers:{
             'Content-Type':'application/json',  
         },
-      data:JSON.stringify({email:formik.values.email,password:formik.values.password})
+      data:JSON.stringify({username:formik.values.username,password:formik.values.password})
     })
     .then((res)=>{
         console.log(res.data)
+        setSubmitting(false)
       
     })
     .catch((err)=>{
@@ -47,7 +48,7 @@ export default function LoginForm() {
 
   const formik = useFormik({
     initialValues: {
-      email: '',
+      username: '',
       password: '',
       remember: true,
     },
@@ -67,7 +68,7 @@ export default function LoginForm() {
     },
   });
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
+  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps,setSubmitting } = formik;
 
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
@@ -80,11 +81,11 @@ export default function LoginForm() {
           <TextField
             fullWidth
             autoComplete="username"
-            type="email"
-            label="Email address"
-            {...getFieldProps('email')}
-            error={Boolean(touched.email && errors.email)}
-            helperText={touched.email && errors.email}
+            type="text"
+            label="Username"
+            {...getFieldProps('username')}
+            error={Boolean(touched.username && errors.username)}
+            helperText={touched.username && errors.username}
           />
 
           <TextField
