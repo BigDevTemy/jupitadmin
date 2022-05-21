@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Products from './pages/Products';
+import UserProfile from './pages/userprofile'
 import DashboardApp from './pages/DashboardApp';
 import DashboardNavbar from './layouts/dashboard/DashboardNavbar';
 import DashboardSidebar from './layouts/dashboard/DashboardSidebar';
@@ -97,6 +98,7 @@ export default function Router({redirectPath='/'}) {
           <Route path="dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route path="app" element={<DashboardApp />} />
             <Route path="user" element={<User/>} />
+            <Route path="user/:id" element={<UserProfile/>} />
             <Route path="product" element={<Products />} />
             <Route path="blog" element={<Blog />} />
           </Route>

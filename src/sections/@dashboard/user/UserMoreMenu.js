@@ -1,18 +1,24 @@
 import { useRef, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, Navigate,useNavigate } from 'react-router-dom';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
-
+import EditModal from '../../../utils/modal/editmodal'
 // ----------------------------------------------------------------------
 
 export default function UserMoreMenu({userid}) {
   const ref = useRef(null);
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  
+  const [stateModal,setStateModal] = useState(false)
+
+   const _handleUserProfile = ()=>{
+    navigate(`/dashboard/user/${userid}`)
+  }
   return (
     <>
+        {stateModal && <EditModal statemodal modifyOpen={setStateModal}/>}
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
         <Iconify icon="eva:more-vertical-fill" width={20} height={20} />
       </IconButton>
@@ -38,7 +44,7 @@ export default function UserMoreMenu({userid}) {
           <ListItemIcon>
             <Iconify icon="eva:edit-fill" width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="View More" primaryTypographyProps={{ variant: 'body2' }}  onClick={()=>{alert(userid)}} />
+          <ListItemText primary="View More" primaryTypographyProps={{ variant: 'body2' }}  onClick={()=>_handleUserProfile()} />
         </MenuItem>
       </Menu>
     </>
