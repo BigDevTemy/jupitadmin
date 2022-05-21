@@ -48,7 +48,7 @@ export default function LoginForm() {
           icon: 'success',
           confirmButtonText: 'ok'
         });
-        navigate("dashboard/user", { replace: true });
+        navigate("dashboard/app", { replace: true });
       
       
     })

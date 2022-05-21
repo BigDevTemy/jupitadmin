@@ -7,10 +7,10 @@ import Iconify from '../../../components/Iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserMoreMenu() {
+export default function UserMoreMenu({userid}) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-
+  
   return (
     <>
       <IconButton ref={ref} onClick={() => setIsOpen(true)}>
@@ -38,7 +38,7 @@ export default function UserMoreMenu() {
           <ListItemIcon>
             <Iconify icon="eva:edit-fill" width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary="View More" primaryTypographyProps={{ variant: 'body2' }}  onClick={()=>{alert(userid)}} />
         </MenuItem>
       </Menu>
     </>

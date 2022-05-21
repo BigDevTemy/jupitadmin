@@ -1,7 +1,11 @@
 import { filter } from 'lodash';
+import '../App.css'
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import axios from 'axios';
+import { reactLocalStorage } from 'reactjs-localstorage';
+import { Link as RouterLink, Navigate,useNavigate } from 'react-router-dom';
 // material
 import {
   Card,
@@ -40,6 +44,7 @@ import {
 // mock
 import USERLIST from '../_mock/user';
 
+
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -77,13 +82,17 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.username.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 export default function User() {
+  const navigate = useNavigate();
   const [page, setPage] = useState(0);
+  const [loader, setLoader] = useState(true);
+
+  const [DATA,setDATA] = useState([]);
 
   const [order, setOrder] = useState('asc');
 
@@ -95,6 +104,59 @@ export default function User() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const getAllUsers = async ()=>{
+    const BaseUrl = process.env.REACT_APP_ADMIN_URL;
+
+    await axios({
+      url:`${BaseUrl}/admin/get/all/users`,
+      method:'GET',
+      headers:{
+        'Content-Type':'application/json',  
+        'Authorization':reactLocalStorage.get('token')
+      },
+    })
+    .then((res)=>{
+      console.log(res.data)
+
+      setDATA(res.data.message);
+      setLoader(false)
+    })
+    .catch((err)=>{
+      
+      if(err.response){
+        if(err.response.status === 403){
+          console.log(err.response.data.message);
+          Swal.fire({
+            title: 'Message!',
+            text: err.response.data.message,
+            icon: 'error',
+            confirmButtonText: 'ok'
+          });
+          navigate('/',{replace:true})
+          return false;
+          
+        }
+        console.log(err)
+      }
+      else{
+        console.log(err)
+      }
+      
+      // Swal.fire({
+      //   title: 'Message!',
+      //   text: err.response.message,
+      //   icon: 'error',
+      //   confirmButtonText: 'ok'
+      // });
+
+    })
+  }
+
+  useEffect(()=>{
+    getAllUsers();
+
+  },[])
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -103,7 +165,7 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = DATA.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -138,10 +200,10 @@ export default function User() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - DATA.length) : 0;
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
-
+  // const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(DATA, getComparator(order, orderBy), filterName);
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
@@ -194,89 +256,98 @@ export default function User() {
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          {loader && <div className='myloader'>loading data...</div>}
+          {!loader && 
+            <>
+             <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <UserListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, username, email, phonenumber, status, avatarUrl, isVerified } = row;
-                    const isItemSelected = selected.indexOf(username) !== -1;
-
-                    return (
-                      <TableRow
-                        hover
-                        key={id}
-                        tabIndex={-1}
-                        role="checkbox"
-                        selected={isItemSelected}
-                        aria-checked={isItemSelected}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, username)} />
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={username} src={avatarUrl} />
-                            <Typography variant="subtitle2" noWrap>
-                              {username}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-                        <TableCell align="left">{email}</TableCell>
-                        <TableCell align="left">{phonenumber}</TableCell>
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-                        <TableCell align="left">
-                          <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
-                            {sentenceCase(status)}
-                          </Label>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <UserMoreMenu />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-
-                {isUserNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <SearchNotFound searchQuery={filterName} />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                )}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
-
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={USERLIST.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+             <Scrollbar>
+               <TableContainer sx={{ minWidth: 800 }}>
+                 <Table>
+                   <UserListHead
+                     order={order}
+                     orderBy={orderBy}
+                     headLabel={TABLE_HEAD}
+                     rowCount={DATA.length}
+                     numSelected={selected.length}
+                     onRequestSort={handleRequestSort}
+                     onSelectAllClick={handleSelectAllClick}
+                   />
+                   <TableBody>
+                     { DATA && filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                       const { id, username, email, phonenumber, status, avatarUrl, isVerified,_id } = row;
+                       const isItemSelected = selected.indexOf(username) !== -1;
+   
+                       return (
+                         <TableRow
+                           hover
+                           key={id}
+                           tabIndex={-1}
+                           role="checkbox"
+                           selected={isItemSelected}
+                           aria-checked={isItemSelected}
+                         >
+                           <TableCell padding="checkbox">
+                             <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, username)} />
+                           </TableCell>
+                           <TableCell component="th" scope="row" padding="none">
+                             <Stack direction="row" alignItems="center" spacing={2}>
+                               <Avatar alt={username} src={avatarUrl} />
+                               <Typography variant="subtitle2" noWrap>
+                                 {username}
+                               </Typography>
+                             </Stack>
+                           </TableCell>
+                           <TableCell align="left">{email}</TableCell>
+                           <TableCell align="left">{phonenumber}</TableCell>
+                           <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+                           <TableCell align="left">
+                             <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
+                               {sentenceCase(status)}
+                             </Label>
+                           </TableCell>
+   
+                           <TableCell align="right">
+                             
+                             <UserMoreMenu userid={_id} />
+                           </TableCell>
+                         </TableRow>
+                       );
+                     })}
+                     {emptyRows > 0 && (
+                       <TableRow style={{ height: 53 * emptyRows }}>
+                         <TableCell colSpan={6} />
+                       </TableRow>
+                     )}
+                   </TableBody>
+   
+                   {isUserNotFound && (
+                     <TableBody>
+                       <TableRow>
+                         <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                           <SearchNotFound searchQuery={filterName} />
+                         </TableCell>
+                       </TableRow>
+                     </TableBody>
+                   )}
+                 </Table>
+               </TableContainer>
+             </Scrollbar>
+   
+             <TablePagination
+               rowsPerPageOptions={[5, 10, 25]}
+               component="div"
+               count={DATA.length}
+               rowsPerPage={rowsPerPage}
+               page={page}
+               onPageChange={handleChangePage}
+               onRowsPerPageChange={handleChangeRowsPerPage}
+             />
+          
+          
+          </>
+          }
+         
         </Card>
       </Container>
     </Page>
