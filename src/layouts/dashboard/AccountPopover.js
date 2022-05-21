@@ -3,10 +3,13 @@ import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton } from '@mui/material';
+
+import { reactLocalStorage } from 'reactjs-localstorage';
 // components
 import MenuPopover from '../../components/MenuPopover';
 // mocks_
 import account from '../../_mock/account';
+
 
 // ----------------------------------------------------------------------
 
@@ -82,10 +85,12 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {/* {account.displayName} */}
+            {reactLocalStorage.getObject('admin').username}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {/* {account.email} */}
+            {reactLocalStorage.getObject('admin').email}
           </Typography>
         </Box>
 

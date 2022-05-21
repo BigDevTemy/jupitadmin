@@ -51,8 +51,8 @@ export default function DashboardApp() {
 
           <Grid item xs={12} md={6} lg={8}>
             <AppWebsiteVisits
-              title="Website Visits"
-              subheader="(+43%) than last year"
+              title="Chart Representaion"
+              subheader="Monthly Chart"
               chartLabels={[
                 '01/01/2003',
                 '02/01/2003',
@@ -91,7 +91,7 @@ export default function DashboardApp() {
 
           <Grid item xs={12} md={6} lg={4}>
             <AppCurrentVisits
-              title="Current Visits"
+              title="Jupit Asset"
               chartData={[
                 { label: 'Naira', value: 4344 },
                 { label: 'BTC', value: 5435 },

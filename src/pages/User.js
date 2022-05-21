@@ -17,6 +17,7 @@ import {
   Typography,
   TableContainer,
   TablePagination,
+  Grid
 } from '@mui/material';
 // components
 import Page from '../components/Page';
@@ -25,15 +26,26 @@ import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
+import {
+  // AppTasks,
+  // AppNewsUpdate,
+  // AppOrderTimeline,
+  // AppCurrentVisits,
+  AppWebsiteVisits,
+  // AppTrafficBySite,
+  AppWidgetSummary,
+  // AppCurrentSubject,
+  // AppConversionRates,
+} from '../sections/@dashboard/app';
 // mock
 import USERLIST from '../_mock/user';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
+  { id: 'username', label: 'Username', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'phonenumber', label: 'Phonenumber', alignRight: false },
   { id: 'isVerified', label: 'Verified', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
@@ -135,12 +147,49 @@ export default function User() {
   return (
     <Page title="User">
       <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+
+
+
+        <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Total Users" total={714000} icon={'bx:group'} />
+        </Grid>
+
+        <Grid item xs={12} md={6} lg={8} sx={{mt:"2rem"}}>
+            <AppWebsiteVisits
+              title="User Onboarding"
+              subheader="Monthly basis"
+              chartLabels={[
+                '01/01/2022',
+                '02/01/2022',
+                '03/01/2022',
+                '04/01/2022',
+                '05/01/2022',
+                '06/01/2022',
+                '07/01/2022',
+                '08/01/2022',
+                '09/01/2022',
+                '10/01/2022',
+                '11/01/2022',
+              ]}
+              chartData={[
+                {
+                  name: 'User',
+                  type: 'column',
+                  fill: 'solid',
+                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+                },
+                
+              ]}
+            />
+          </Grid>
+
+
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} mt={5}>
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
-          <Button variant="contained" component={RouterLink} to="#" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New User
+          <Button variant="contained" component={RouterLink} to="#" startIcon={<Iconify icon="clarity:export-line" />}>
+            Export To Excel
           </Button>
         </Stack>
 

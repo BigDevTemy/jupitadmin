@@ -5,6 +5,7 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
 // mock
+import { reactLocalStorage } from 'reactjs-localstorage';
 import account from '../../_mock/account';
 // hooks
 import useResponsive from '../../hooks/useResponsive';
@@ -14,6 +15,7 @@ import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
 import navConfig from './NavConfig';
+
 
 // ----------------------------------------------------------------------
 
@@ -70,7 +72,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             <Avatar src={account.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
+                {reactLocalStorage.getObject('admin').firstname}&nbsp;{reactLocalStorage.getObject('admin').lastname}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 {account.role}
@@ -94,15 +96,15 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
 
           <Box sx={{ textAlign: 'center' }}>
             <Typography gutterBottom variant="h6">
-              Get more?
+              Security Tips
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              From only $69
+              Do not Disclose your Password
             </Typography>
           </Box>
 
-          <Button href="https://material-ui.com/store/items/minimal-dashboard/" target="_blank" variant="contained">
-            Upgrade to Pro
+          <Button href="#" target="" variant="contained">
+            Logout
           </Button>
         </Stack>
       </Box>
