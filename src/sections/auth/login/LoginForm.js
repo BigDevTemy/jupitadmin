@@ -8,8 +8,9 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // component
-
+import { reactLocalStorage } from 'reactjs-localstorage';
 import Iconify from '../../../components/Iconify';
+
 
 
 // ----------------------------------------------------------------------
@@ -38,12 +39,17 @@ export default function LoginForm() {
     .then((res)=>{
         console.log(res.data)
         setSubmitting(false);
-        Swal.fire({
-        title: 'Message!',
-        text: res.data.message,
-        icon: 'success',
-        confirmButtonText: 'ok'
-      });
+        reactLocalStorage.set('token',res.data.token);
+        reactLocalStorage.setObject('admin',res.data.docs) ;
+        
+          Swal.fire({
+          title: 'Message!',
+          text: res.data.message,
+          icon: 'success',
+          confirmButtonText: 'ok'
+        });
+        navigate("dashboard/user", { replace: true });
+      
       
     })
     .catch((err)=>{
