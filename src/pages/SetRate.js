@@ -39,6 +39,17 @@ const [usdtbuy,setusdtbuy] = useState();
 const [btcbuy,setbtcbuy] = useState();
 const [giftcardbuy,setgiftcardbuy] = useState();
 
+const [giftcardDisablebuy,setgiftcardDisablebuy] = useState(false)
+const [giftcardDisablesell,setgiftcardDisablesell] = useState(false)
+
+const [btcDisablebuy,setbtcDisablebuy] = useState(false)
+const [btcDisablesell,setbtcDisablesell] = useState(false)
+
+const [usdtDisablebuy,setusdtDisablebuy] = useState(false)
+const [usdtDisablesell,setusdtDisablesell] = useState(false)
+
+
+
 const handleBtcBuy = (e)=>{
     setbtcbuy(e.target.value)
 }
@@ -75,8 +86,13 @@ const updateGiftcardSell = async ()=>{
     })
     .then((res)=>{
       console.log(res.data)
-      toast.success(res.data.message,'Success Callback');
-      
+      setgiftcardsell('')
+      Swal.fire({
+        title: 'Success Callback!',
+        text: res.data.message,
+        icon: 'success',
+        confirmButtonText: 'ok'
+      });
     })
     .catch((err)=>{
      
@@ -117,8 +133,9 @@ const updateGiftcardSell = async ()=>{
   const theme = useTheme();
   return (
     <Page title="Dashboard">
-         <ToastContainer/>
+         
       <Container maxWidth="xl">
+      
       <Typography variant="h4" sx={{ mb: 5 }}>
           Rate Portal.
         </Typography>
@@ -128,12 +145,12 @@ const updateGiftcardSell = async ()=>{
                 
                 <CardContent>
                     <TextField fullWidth label="Set Buy Rate BTC" id="fullWidth"  type="number" value={btcbuy || ''}  onChange={handleBtcBuy} />
-                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5,marginBottom:20}}>
+                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5,marginBottom:20}} disabled={usdtDisablebuy}>
                        Save Buy Rate (<Iconify icon="cryptocurrency:btc"/>)
                     </Button>
 
                     <TextField fullWidth label="Set Sell Rate BTC" id="fullWidth"  type="number"  value={btcsell || ''}  onChange={handleBtcSell}/>
-                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5}}>
+                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5}} disabled={btcDisablesell}>
                        Save Sell Rate (<Iconify icon="cryptocurrency:btc"/>)
                     </Button>
                 </CardContent>
@@ -144,12 +161,12 @@ const updateGiftcardSell = async ()=>{
                   
                 <CardContent>
                     <TextField fullWidth label="Set Buy USDT" id="fullWidth"  type="number"  value={usdtbuy || ''}  onChange={handleUsdtBuy}  />
-                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5,marginBottom:20}}>
+                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5,marginBottom:20}} disabled={usdtDisablebuy}>
                        Save Buy Rate (<Iconify icon="cryptocurrency:usdt"/>)
                     </Button>
 
                     <TextField fullWidth label="Set Sell USDT" id="fullWidth"  type="number" value={usdtsell || ''}  onChange={handleUsdtSell} />
-                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5}}>
+                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5}} disabled={usdtDisablesell}>
                        Save Sell Rate (<Iconify icon="cryptocurrency:usdt"/>)
                     </Button>
                 </CardContent>
@@ -160,12 +177,12 @@ const updateGiftcardSell = async ()=>{
                   
                 <CardContent>
                     <TextField fullWidth label="Set Buy GiftCard" id="fullWidth"  type="number"  value={giftcardbuy|| ''}  onChange={handleGiftcardBuy}  />
-                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5,marginBottom:20}}>
+                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5,marginBottom:20}} disabled={giftcardDisablebuy}>
                        Save Buy Rate (<Iconify icon="ic:round-card-giftcard"/>)
                     </Button>
 
                     <TextField fullWidth label="Set Sell GiftCard" id="fullWidth"  type="number"  value={giftcardsell|| ''}  onChange={handleGiftcardSell}   />
-                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5}} onClick={()=>updateGiftcardSell()}>
+                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> }  disabled={giftcardDisablesell}  style={{marginTop:5}} onClick={()=>updateGiftcardSell()}>
                        Save Sell Rate (<Iconify icon="ic:round-card-giftcard"/>)
                     </Button>
                 </CardContent>
