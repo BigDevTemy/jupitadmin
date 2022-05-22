@@ -25,7 +25,8 @@ import {
   TablePagination,
   Grid,
   useTheme,
-  TextField
+  TextField,
+  getAccordionSummaryUtilityClass
 } from '@mui/material';
 // components
 import BiggerLoader from '../utils/loader'
@@ -49,6 +50,7 @@ import {
 } from '../sections/@dashboard/app';
 // mock
 import USERLIST from '../_mock/user';
+
 
 
 
@@ -110,6 +112,7 @@ export default function User() {
   const [doc,setdoc] = useState();
   const[bank,setbank] = useState();
   const [accountnumber,setaccountnumber] = useState()
+  const [twofactor,settwofactor] = useState();
 
   const [DATA,setDATA] = useState([]);
 
@@ -142,11 +145,13 @@ export default function User() {
       setusername(res.data.detail.username);
       setemail(res.data.detail.email);
       setphonenumber(res.data.detail.phonenumber);
-      setdoc(res.data.detail.dateofcreation);
+      setdoc(res.data.detail.updated);
       setbank(res.data.bank.bank_code);
-      setaccountnumber(res.data.bank.accountnumber)
-
+      setaccountnumber(res.data.bank.account_number)
+        settwofactor(res.data.twofactor);
       setbigLoader(false);
+
+      console.log('naira',accountnumber)
 
     })
     .catch((err)=>{
@@ -255,28 +260,44 @@ export default function User() {
 
             <Grid item xs={12} md={6} lg={8}>
                 <Card style={{padding:20}}>
-                <Typography variant="h4" gutterBottom mb={5}>
-                    User Profile Details<Iconify icon="eva:edit-2-fill"/>
-                </Typography>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
-                    <Typography align='left'  gutterBottom>
+                    <Typography variant="h4" gutterBottom mb={5}>
+                        User Profile Details<Iconify icon="eva:edit-2-fill"/>
+                    </Typography>
+                    <Typography variant="h4" gutterBottom mb={5}>
+
+                    <Button variant="outlined" component={RouterLink} to="#" color="error" startIcon={<Iconify icon="arcticons:microsoftauthenticator" />}>
+                        {twofactor && twofactor.activated && 'Disable 2FA'}
+                        {!twofactor && 'Not Activated'}
+                    </Button>
+                    </Typography>
+                </Stack>
+                    
+                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+                    <Typography   gutterBottom>
                         <TextField
                             label="Username"
                             id="outlined-start-adornment"
                             sx={{ m: 1, width: '30ch' }}
-                            disabled
-                            defaultValue={username}
+                            
+                            value={username || ''}
                             variant='filled'
+                            InputProps={{
+                                readOnly: true,
+                            }}
                             />
                         </Typography>
                     <Typography align='left' gutterBottom>
                     <TextField
-                            label="PhoneNumber"
+                            label="Phonenumber"
                             id="outlined-start-adornment"
                             sx={{ m: 1, width: '30ch' }}
-                            disabled
-                            defaultValue={phonenumber}
+                            
+                            value={phonenumber || ''}
                             variant='filled'
+                            InputProps={{
+                                readOnly: true,
+                            }}
                             />
                         
                     </Typography>
@@ -284,22 +305,28 @@ export default function User() {
                 <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
                     <Typography variance="body1" align='left'  gutterBottom>
                     <TextField
-                            label="EmailAddress"
+                            label="Email"
                             id="outlined-start-adornment"
                             sx={{ m: 1, width: '30ch' }}
-                            disabled
-                            defaultValue={email}
+                            
+                            value={email || ''}
                             variant='filled'
+                            InputProps={{
+                                readOnly: true,
+                            }}
                             />
                     </Typography>
                     <Typography    align='left'gutterBottom>
                         <TextField
-                            label="Date OF Creation"
+                            label="Date Of Creation"
                             id="outlined-start-adornment"
                             sx={{ m: 1, width: '30ch' }}
-                            disabled
-                            defaultValue={setdoc}
+                           
+                            value={doc || ''}
                             variant='filled'
+                            InputProps={{
+                                readOnly: true,
+                            }}
                             />
                     </Typography>
                     
@@ -310,9 +337,12 @@ export default function User() {
                             label="Bank"
                             id="outlined-start-adornment"
                             sx={{ m: 1, width: '30ch' }}
-                            disabled
-                            defaultValue="Bank"
+                            
+                            value={bank || ''}
                             variant='filled'
+                            InputProps={{
+                                readOnly: true,
+                            }}
                             />
                     </Typography>
                     <Typography    align='left'gutterBottom>
@@ -320,9 +350,12 @@ export default function User() {
                             label="Account Number"
                             id="outlined-start-adornment"
                             sx={{ m: 1, width: '30ch' }}
-                            disabled
-                            defaultValue="0690086425"
+                            
+                            value={accountnumber || ''}
                             variant='filled'
+                            InputProps={{
+                                readOnly: true,
+                            }}
                             />
                     </Typography>
                     

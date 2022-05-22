@@ -17,6 +17,7 @@ import UserProfile from './pages/userprofile'
 import DashboardApp from './pages/DashboardApp';
 import DashboardNavbar from './layouts/dashboard/DashboardNavbar';
 import DashboardSidebar from './layouts/dashboard/DashboardSidebar';
+import SetRate from './pages/SetRate';
 
 // ----------------------------------------------------------------------
 
@@ -99,6 +100,7 @@ export default function Router({redirectPath='/'}) {
             <Route path="app" element={<DashboardApp />} />
             <Route path="user" element={<User/>} />
             <Route path="user/:id" element={<UserProfile/>} />
+            <Route path="setrate" element={<SetRate/>} />
             <Route path="product" element={<Products />} />
             <Route path="blog" element={<Blog />} />
           </Route>
