@@ -1,4 +1,6 @@
 // @mui
+
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
@@ -6,6 +8,8 @@ import { Card, Typography } from '@mui/material';
 import { fShortenNumber } from '../../../utils/formatNumber';
 // components
 import Iconify from '../../../components/Iconify';
+import Modal from '../../../utils/modal/editmodal'
+
 
 // ----------------------------------------------------------------------
 
@@ -22,16 +26,27 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-AppWidgetSummary.propTypes = {
+AppWidgetSummaryEdit.propTypes = {
   color: PropTypes.string,
   icon: PropTypes.string,
   title: PropTypes.string.isRequired,
   total: PropTypes.number.isRequired,
   sx: PropTypes.object,
+  edit:PropTypes.string
 };
 
-export default function AppWidgetSummary({ title, total, icon, color = 'primary', sx, ...other }) {
+export default function AppWidgetSummaryEdit({ title, total, icon, edit,userid, color = 'primary', sx, ...other }) {
+
+    const [openmodal,setOpenModal] = useState(false);
+
+    const handleClick = ()=>{
+        setOpenModal(true);
+    }
+
   return (
+      <>
+      
+    {openmodal &&<Modal statemodal={openmodal} modifyOpen={setOpenModal} modalTitle={title} userid={userid}/>}
     <Card
       sx={{
         py: 5,
@@ -61,7 +76,8 @@ export default function AppWidgetSummary({ title, total, icon, color = 'primary'
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         {title}
       </Typography>
-      
+      <Iconify icon={edit} width={24} height={24}  onClick={()=>handleClick()}/>
     </Card>
+    </>
   );
 }

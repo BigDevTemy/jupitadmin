@@ -4,11 +4,13 @@ import { sentenceCase } from 'change-case';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { faker } from '@faker-js/faker';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import { Link as RouterLink, Navigate,useNavigate, useParams } from 'react-router-dom';
 // material
 import {
   Card,
+  CardContent,
   Table,
   Stack,
   Avatar,
@@ -21,9 +23,12 @@ import {
   Typography,
   TableContainer,
   TablePagination,
-  Grid
+  Grid,
+  useTheme,
+  TextField
 } from '@mui/material';
 // components
+import BiggerLoader from '../utils/loader'
 import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
@@ -33,16 +38,18 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 import {
   // AppTasks,
   // AppNewsUpdate,
-  // AppOrderTimeline,
-  // AppCurrentVisits,
+  AppOrderTimeline,
+  AppCurrentVisits,
   AppWebsiteVisits,
   // AppTrafficBySite,
   AppWidgetSummary,
+  AppWidgetSummaryEdit
   // AppCurrentSubject,
   // AppConversionRates,
 } from '../sections/@dashboard/app';
 // mock
 import USERLIST from '../_mock/user';
+
 
 
 // ----------------------------------------------------------------------
@@ -89,11 +96,20 @@ function applySortFilter(array, comparator, query) {
 
 export default function User() {
   const navigate = useNavigate();
+  const theme = useTheme();
   const [page, setPage] = useState(0);
-  const [loader, setLoader] = useState(true);
+  const [loader, setLoader] = useState(false);
   const [btcbalance,setbtcbalance] = useState();
   const [usdtbalance,setusdtbalance] = useState();
   const [nairabalance,setnairabalance] = useState();
+  const [bigloader,setbigLoader] = useState(true)
+
+  const [username,setusername] = useState();
+  const [phonenumber,setphonenumber] = useState();
+  const [email,setemail] = useState();
+  const [doc,setdoc] = useState();
+  const[bank,setbank] = useState();
+  const [accountnumber,setaccountnumber] = useState()
 
   const [DATA,setDATA] = useState([]);
 
@@ -104,30 +120,37 @@ export default function User() {
   const [orderBy, setOrderBy] = useState('name');
 
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { id } = useParams();
-  const getAllUsers = async ()=>{
+  const getAllUserDetails = async ()=>{
     const BaseUrl = process.env.REACT_APP_ADMIN_URL;
-
+    console.log(id)
     await axios({
       url:`${BaseUrl}/admin/get/all/users/id`,
       method:'POST',
-
       headers:{
         'Content-Type':'application/json',  
         'Authorization':reactLocalStorage.get('token')
       },
-      data:JSON.stringify(id)
+      data:JSON.stringify({id})
     })
     .then((res)=>{
       console.log(res.data)
+      setbtcbalance(res.data.detail.btc_wallet[0].balance.$numberDecimal);
+      setusdtbalance(res.data.detail.usdt_wallet[0].balance.$numberDecimal);
+      setnairabalance(res.data.detail.naira_wallet[0].balance.$numberDecimal);
+      setusername(res.data.detail.username);
+      setemail(res.data.detail.email);
+      setphonenumber(res.data.detail.phonenumber);
+      setdoc(res.data.detail.dateofcreation);
+      setbank(res.data.bank.bank_code);
+      setaccountnumber(res.data.bank.accountnumber)
 
-      setDATA(res.data.message);
-      setLoader(false)
+      setbigLoader(false);
+
     })
     .catch((err)=>{
-      
+      setbigLoader(false)
       if(err.response){
         if(err.response.status === 403){
           console.log(err.response.data.message);
@@ -158,7 +181,9 @@ export default function User() {
   }
 
   useEffect(()=>{
-    getAllUsers();
+    setbigLoader(true);
+    getAllUserDetails();
+    
 
   },[])
 
@@ -213,19 +238,119 @@ export default function User() {
 
   return (
     <Page title="UserProfile">
+        {bigloader && <BiggerLoader/>}
       <Container>
 
       <Grid container spacing={3}>
             <Grid item xs={12} sm={6} md={3}>
-                <AppWidgetSummary title="BTC Wallet Balance" color="warning" total={btcbalance} icon={'cryptocurrency:btc'} />
+                <AppWidgetSummaryEdit title="BTC Wallet Balance" color="warning" total={btcbalance} icon={'cryptocurrency:btc'} edit={'bx:edit'} userid={id}  />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-                <AppWidgetSummary title="USDT Wallet Balance"  color="success" total={usdtbalance} icon={'cryptocurrency:usdt'} />
+                <AppWidgetSummaryEdit title="USDT Wallet Balance"  color="success" total={usdtbalance} icon={'cryptocurrency:usdt'} edit={'bx:edit'} userid={id} />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-                <AppWidgetSummary title="Naira Wallet Balance" total={nairabalance} icon={'tabler:currency-naira'} />
+                <AppWidgetSummaryEdit title="Naira Wallet Balance" total={nairabalance} icon={'tabler:currency-naira'} edit={'bx:edit'} userid={id}/>
             </Grid>
+
+
+            <Grid item xs={12} md={6} lg={8}>
+                <Card style={{padding:20}}>
+                <Typography variant="h4" gutterBottom mb={5}>
+                    User Profile Details<Iconify icon="eva:edit-2-fill"/>
+                </Typography>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+                    <Typography align='left'  gutterBottom>
+                        <TextField
+                            label="Username"
+                            id="outlined-start-adornment"
+                            sx={{ m: 1, width: '30ch' }}
+                            disabled
+                            defaultValue={username}
+                            variant='filled'
+                            />
+                        </Typography>
+                    <Typography align='left' gutterBottom>
+                    <TextField
+                            label="PhoneNumber"
+                            id="outlined-start-adornment"
+                            sx={{ m: 1, width: '30ch' }}
+                            disabled
+                            defaultValue={phonenumber}
+                            variant='filled'
+                            />
+                        
+                    </Typography>
+                </Stack>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+                    <Typography variance="body1" align='left'  gutterBottom>
+                    <TextField
+                            label="EmailAddress"
+                            id="outlined-start-adornment"
+                            sx={{ m: 1, width: '30ch' }}
+                            disabled
+                            defaultValue={email}
+                            variant='filled'
+                            />
+                    </Typography>
+                    <Typography    align='left'gutterBottom>
+                        <TextField
+                            label="Date OF Creation"
+                            id="outlined-start-adornment"
+                            sx={{ m: 1, width: '30ch' }}
+                            disabled
+                            defaultValue={setdoc}
+                            variant='filled'
+                            />
+                    </Typography>
+                    
+                </Stack>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+                    <Typography variance="body1" align='left'  gutterBottom>
+                    <TextField
+                            label="Bank"
+                            id="outlined-start-adornment"
+                            sx={{ m: 1, width: '30ch' }}
+                            disabled
+                            defaultValue="Bank"
+                            variant='filled'
+                            />
+                    </Typography>
+                    <Typography    align='left'gutterBottom>
+                        <TextField
+                            label="Account Number"
+                            id="outlined-start-adornment"
+                            sx={{ m: 1, width: '30ch' }}
+                            disabled
+                            defaultValue="0690086425"
+                            variant='filled'
+                            />
+                    </Typography>
+                    
+                </Stack>
+                
+                </Card>
+                
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={4}>
+          <AppOrderTimeline
+              title="KYC (Know Your Client) LEVEL"
+              list={[...Array(3)].map((_, index) => ({
+                id: faker.datatype.uuid(),
+                title: [
+                  'KYC LEVEL 1',
+                  'KYC LEVEL 2',
+                  'KYC LEVEL 3'
+                 
+                ][index],
+                type: `order${index + 1}`,
+                time: faker.date.past(),
+              }))}
+            />
+          </Grid>
         </Grid>
+
+        
 
         <Grid item xs={12} md={6} lg={8} sx={{mt:"2rem"}}>
             <Card>
