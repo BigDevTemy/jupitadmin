@@ -73,8 +73,19 @@ const handleGiftcardBuy = (e)=>{
 }
 
 const updateGiftcardSell = async ()=>{
+
+    if(!giftcardsell){
+         Swal.fire({
+        title: 'oops!',
+        text: 'Invalid Parameter',
+        icon: 'error',
+        confirmButtonText: 'ok'
+      });
+      return false
+    }
+
     const BaseUrl = process.env.REACT_APP_ADMIN_URL;
-   
+   setgiftcardDisablesell(true);
     await axios({
       url:`${BaseUrl}/admin/set/rate/giftcard`,
       method:'POST',
@@ -87,6 +98,343 @@ const updateGiftcardSell = async ()=>{
     .then((res)=>{
       console.log(res.data)
       setgiftcardsell('')
+      setgiftcardDisablesell(false);
+      Swal.fire({
+        title: 'Success Callback!',
+        text: res.data.message,
+        icon: 'success',
+        confirmButtonText: 'ok'
+      });
+    })
+    .catch((err)=>{
+     
+      if(err.response){
+        if(err.response.status === 403){
+          console.log(err.response.data.message);
+          Swal.fire({
+            title: 'Message!',
+            text: err.response.data.message,
+            icon: 'error',
+            confirmButtonText: 'ok'
+          });
+          navigate('/',{replace:true})
+          return false;
+          
+        }
+        
+            toast.error(err.response.data,'Failed Callback');
+    
+        console.log(err)
+      }
+      else{
+        console.log(err)
+      }
+      
+      // Swal.fire({
+      //   title: 'Message!',
+      //   text: err.response.message,
+      //   icon: 'error',
+      //   confirmButtonText: 'ok'
+      // });
+
+    })
+}
+
+
+const updateGiftcardBuy = async ()=>{
+    if(!giftcardbuy){
+        Swal.fire({
+       title: 'oops!',
+       text: 'Invalid Parameter',
+       icon: 'error',
+       confirmButtonText: 'ok'
+     });
+     return false
+   }
+    const BaseUrl = process.env.REACT_APP_ADMIN_URL;
+   setgiftcardDisablebuy(true);
+    await axios({
+      url:`${BaseUrl}/admin/set/rate/giftcard`,
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',  
+        'Authorization':reactLocalStorage.get('token')
+      },
+      data:JSON.stringify({giftcard_buy:giftcardbuy,type:"GIFTCARD_BUY"})
+    })
+    .then((res)=>{
+      console.log(res.data)
+      setgiftcardbuy('')
+      setgiftcardDisablebuy(false);
+      Swal.fire({
+        title: 'Success Callback!',
+        text: res.data.message,
+        icon: 'success',
+        confirmButtonText: 'ok'
+      });
+    })
+    .catch((err)=>{
+     
+      if(err.response){
+        if(err.response.status === 403){
+          console.log(err.response.data.message);
+          Swal.fire({
+            title: 'Message!',
+            text: err.response.data.message,
+            icon: 'error',
+            confirmButtonText: 'ok'
+          });
+          navigate('/',{replace:true})
+          return false;
+          
+        }
+        
+            toast.error(err.response.data,'Failed Callback');
+    
+        console.log(err)
+      }
+      else{
+        console.log(err)
+      }
+      
+      // Swal.fire({
+      //   title: 'Message!',
+      //   text: err.response.message,
+      //   icon: 'error',
+      //   confirmButtonText: 'ok'
+      // });
+
+    })
+}
+
+
+const updateUsdtBuy = async ()=>{
+    if(!usdtbuy){
+        Swal.fire({
+       title: 'oops!',
+       text: 'Invalid Parameter',
+       icon: 'error',
+       confirmButtonText: 'ok'
+     });
+     return false
+   }
+    const BaseUrl = process.env.REACT_APP_ADMIN_URL;
+   setusdtDisablebuy(true);
+    await axios({
+      url:`${BaseUrl}/admin/set/rate/usdt`,
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',  
+        'Authorization':reactLocalStorage.get('token')
+      },
+      data:JSON.stringify({usdt_buy:usdtbuy,type:"USDT_BUY"})
+    })
+    .then((res)=>{
+      console.log(res.data)
+      setusdtbuy('')
+      setusdtDisablebuy(false);
+      Swal.fire({
+        title: 'Success Callback!',
+        text: res.data.message,
+        icon: 'success',
+        confirmButtonText: 'ok'
+      });
+    })
+    .catch((err)=>{
+     
+      if(err.response){
+        if(err.response.status === 403){
+          console.log(err.response.data.message);
+          Swal.fire({
+            title: 'Message!',
+            text: err.response.data.message,
+            icon: 'error',
+            confirmButtonText: 'ok'
+          });
+          navigate('/',{replace:true})
+          return false;
+          
+        }
+        
+            toast.error(err.response.data,'Failed Callback');
+    
+        console.log(err)
+      }
+      else{
+        console.log(err)
+      }
+      
+      // Swal.fire({
+      //   title: 'Message!',
+      //   text: err.response.message,
+      //   icon: 'error',
+      //   confirmButtonText: 'ok'
+      // });
+
+    })
+}
+
+
+
+const updateUsdtSell = async ()=>{
+    if(!usdtsell){
+        Swal.fire({
+       title: 'oops!',
+       text: 'Invalid Parameter',
+       icon: 'error',
+       confirmButtonText: 'ok'
+     });
+     return false
+   }
+    const BaseUrl = process.env.REACT_APP_ADMIN_URL;
+   setusdtDisablesell(true);
+    await axios({
+      url:`${BaseUrl}/admin/set/rate/usdt`,
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',  
+        'Authorization':reactLocalStorage.get('token')
+      },
+      data:JSON.stringify({usdt_sell:usdtsell,type:"USDT_SELL"})
+    })
+    .then((res)=>{
+      console.log(res.data)
+      setusdtsell('')
+      setusdtDisablesell(false);
+      Swal.fire({
+        title: 'Success Callback!',
+        text: res.data.message,
+        icon: 'success',
+        confirmButtonText: 'ok'
+      });
+    })
+    .catch((err)=>{
+     
+      if(err.response){
+        if(err.response.status === 403){
+          console.log(err.response.data.message);
+          Swal.fire({
+            title: 'Message!',
+            text: err.response.data.message,
+            icon: 'error',
+            confirmButtonText: 'ok'
+          });
+          navigate('/',{replace:true})
+          return false;
+          
+        }
+        
+            toast.error(err.response.data,'Failed Callback');
+    
+        console.log(err)
+      }
+      else{
+        console.log(err)
+      }
+      
+      // Swal.fire({
+      //   title: 'Message!',
+      //   text: err.response.message,
+      //   icon: 'error',
+      //   confirmButtonText: 'ok'
+      // });
+
+    })
+}
+
+
+const updateBtcSell = async ()=>{
+    if(!btcsell){
+        Swal.fire({
+       title: 'oops!',
+       text: 'Invalid Parameter',
+       icon: 'error',
+       confirmButtonText: 'ok'
+     });
+     return false
+   }
+    const BaseUrl = process.env.REACT_APP_ADMIN_URL;
+   setbtcDisablesell(true);
+    await axios({
+      url:`${BaseUrl}/admin/set/rate/btc`,
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',  
+        'Authorization':reactLocalStorage.get('token')
+      },
+      data:JSON.stringify({btc_sell:btcsell,type:"BTC_SELL"})
+    })
+    .then((res)=>{
+      console.log(res.data)
+      setbtcsell('')
+      setbtcDisablesell(false);
+      Swal.fire({
+        title: 'Success Callback!',
+        text: res.data.message,
+        icon: 'success',
+        confirmButtonText: 'ok'
+      });
+    })
+    .catch((err)=>{
+     
+      if(err.response){
+        if(err.response.status === 403){
+          console.log(err.response.data.message);
+          Swal.fire({
+            title: 'Message!',
+            text: err.response.data.message,
+            icon: 'error',
+            confirmButtonText: 'ok'
+          });
+          navigate('/',{replace:true})
+          return false;
+          
+        }
+        
+            toast.error(err.response.data,'Failed Callback');
+    
+        console.log(err)
+      }
+      else{
+        console.log(err)
+      }
+      
+      // Swal.fire({
+      //   title: 'Message!',
+      //   text: err.response.message,
+      //   icon: 'error',
+      //   confirmButtonText: 'ok'
+      // });
+
+    })
+}
+
+
+const updateBtcBuy = async ()=>{
+    if(!btcbuy){
+        Swal.fire({
+       title: 'oops!',
+       text: 'Invalid Parameter',
+       icon: 'error',
+       confirmButtonText: 'ok'
+     });
+     return false
+   }
+    const BaseUrl = process.env.REACT_APP_ADMIN_URL;
+   setbtcDisablebuy(true);
+    await axios({
+      url:`${BaseUrl}/admin/set/rate/btc`,
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',  
+        'Authorization':reactLocalStorage.get('token')
+      },
+      data:JSON.stringify({btc_buy:btcbuy,type:"BTC_BUY"})
+    })
+    .then((res)=>{
+      console.log(res.data)
+      setbtcbuy('')
+      setbtcDisablebuy(false);
       Swal.fire({
         title: 'Success Callback!',
         text: res.data.message,
@@ -145,12 +493,12 @@ const updateGiftcardSell = async ()=>{
                 
                 <CardContent>
                     <TextField fullWidth label="Set Buy Rate BTC" id="fullWidth"  type="number" value={btcbuy || ''}  onChange={handleBtcBuy} />
-                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5,marginBottom:20}} disabled={usdtDisablebuy}>
+                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5,marginBottom:20}} disabled={btcDisablebuy} onClick={()=>updateBtcBuy()}>
                        Save Buy Rate (<Iconify icon="cryptocurrency:btc"/>)
                     </Button>
 
                     <TextField fullWidth label="Set Sell Rate BTC" id="fullWidth"  type="number"  value={btcsell || ''}  onChange={handleBtcSell}/>
-                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5}} disabled={btcDisablesell}>
+                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5}} disabled={btcDisablesell} onClick={()=>updateBtcSell()}>
                        Save Sell Rate (<Iconify icon="cryptocurrency:btc"/>)
                     </Button>
                 </CardContent>
@@ -161,12 +509,12 @@ const updateGiftcardSell = async ()=>{
                   
                 <CardContent>
                     <TextField fullWidth label="Set Buy USDT" id="fullWidth"  type="number"  value={usdtbuy || ''}  onChange={handleUsdtBuy}  />
-                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5,marginBottom:20}} disabled={usdtDisablebuy}>
+                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5,marginBottom:20}} disabled={usdtDisablebuy} onClick={()=>updateUsdtBuy()}>
                        Save Buy Rate (<Iconify icon="cryptocurrency:usdt"/>)
                     </Button>
 
                     <TextField fullWidth label="Set Sell USDT" id="fullWidth"  type="number" value={usdtsell || ''}  onChange={handleUsdtSell} />
-                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5}} disabled={usdtDisablesell}>
+                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5}} disabled={usdtDisablesell} onClick={()=>updateUsdtSell()}>
                        Save Sell Rate (<Iconify icon="cryptocurrency:usdt"/>)
                     </Button>
                 </CardContent>
@@ -177,7 +525,7 @@ const updateGiftcardSell = async ()=>{
                   
                 <CardContent>
                     <TextField fullWidth label="Set Buy GiftCard" id="fullWidth"  type="number"  value={giftcardbuy|| ''}  onChange={handleGiftcardBuy}  />
-                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5,marginBottom:20}} disabled={giftcardDisablebuy}>
+                    <Button variant="outlined"  to="#" color="secondary" startIcon={<Iconify icon="arcticons:microsoftauthenticator" /> } style={{marginTop:5,marginBottom:20}} disabled={giftcardDisablebuy} onClick={()=>updateGiftcardBuy()}>
                        Save Buy Rate (<Iconify icon="ic:round-card-giftcard"/>)
                     </Button>
 

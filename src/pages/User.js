@@ -92,6 +92,8 @@ export default function User() {
   const [page, setPage] = useState(0);
   const [loader, setLoader] = useState(true);
 
+ 
+
   const [DATA,setDATA] = useState([]);
 
   const [order, setOrder] = useState('asc');
@@ -103,6 +105,7 @@ export default function User() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+ 
 
   const getAllUsers = async ()=>{
     const BaseUrl = process.env.REACT_APP_ADMIN_URL;
@@ -152,10 +155,14 @@ export default function User() {
     })
   }
 
+
   useEffect(()=>{
     getAllUsers();
+    
 
   },[])
+
+
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';

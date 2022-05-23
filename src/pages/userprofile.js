@@ -122,12 +122,20 @@ export default function User() {
 
   const [orderBy, setOrderBy] = useState('name');
 
+  const [btcmarketprice,setbtcmarketprice] = useState(0);
+  const [btcmarketpricedisplay,setbtcmarketpricedisplay] = useState('');
+
+  const [usdtmarketprice,setusdtmarketprice] = useState(0);
+  const [usdtmarketpricedisplay,setusdtmarketpricedisplay] = useState('');
+
+  const [marketdata,setmarketdata] = useState([])
+
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { id } = useParams();
   const getAllUserDetails = async ()=>{
     const BaseUrl = process.env.REACT_APP_ADMIN_URL;
-    console.log(id)
+    
     await axios({
       url:`${BaseUrl}/admin/get/all/users/id`,
       method:'POST',
@@ -185,12 +193,40 @@ export default function User() {
     })
   }
 
-  useEffect(()=>{
-    setbigLoader(true);
-    getAllUserDetails();
+  
+    const marketprice = ()=>{
+        axios.get('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,USDT&tsyms=USD',{
+        headers:{
+            'Content-Type':'application/json',
+            'Authorization':'Apikey 475906935b55657e131801270facf7cd73a797ee9cff36bbb24185f751c18d63'
+        }
+    })
+    .then(res=>{
+   
+    setmarketdata(res.data)
+    setbtcmarketprice(res.data.RAW.BTC.USD.PRICE);
+    setbtcmarketpricedisplay(res.data.DISPLAY.BTC.USD.PRICE)
+    setusdtmarketprice(res.data.RAW.USDT.USD.PRICE);
+    setusdtmarketpricedisplay(res.data.DISPLAY.USDT.USD.PRICE)
     
+    })
+    .catch(err=>{
+    console.log(err)
+    })
+    }
 
-  },[])
+
+
+    useEffect(()=>{
+        setbigLoader(true);
+        getAllUserDetails();
+        
+
+    },[])
+
+    useEffect(()=>{
+        marketprice();
+    },[marketdata])
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -248,10 +284,10 @@ export default function User() {
 
       <Grid container spacing={3}>
             <Grid item xs={12} sm={6} md={3}>
-                <AppWidgetSummaryEdit title="BTC Wallet Balance" color="warning" total={btcbalance} icon={'cryptocurrency:btc'} edit={'bx:edit'} userid={id}  />
+                <AppWidgetSummaryEdit title="BTC Wallet Balance" color="warning" total={btcbalance} icon={'cryptocurrency:btc'} edit={'bx:edit'} userid={id} livemarket={btcmarketpricedisplay}  />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-                <AppWidgetSummaryEdit title="USDT Wallet Balance"  color="success" total={usdtbalance} icon={'cryptocurrency:usdt'} edit={'bx:edit'} userid={id} />
+                <AppWidgetSummaryEdit title="USDT Wallet Balance"  color="success" total={usdtbalance} icon={'cryptocurrency:usdt'} edit={'bx:edit'} userid={id}  livemarket={usdtmarketpricedisplay}/>
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
                 <AppWidgetSummaryEdit title="Naira Wallet Balance" total={nairabalance} icon={'tabler:currency-naira'} edit={'bx:edit'} userid={id}/>

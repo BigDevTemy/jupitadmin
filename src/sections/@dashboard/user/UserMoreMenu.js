@@ -14,7 +14,9 @@ export default function UserMoreMenu({userid}) {
   const [stateModal,setStateModal] = useState(false)
 
    const _handleUserProfile = ()=>{
-    navigate(`/dashboard/user/${userid}`)
+   
+     
+     window.location=`/dashboard/user/${userid}`
   }
   return (
     <>

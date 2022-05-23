@@ -35,7 +35,7 @@ AppWidgetSummaryEdit.propTypes = {
   edit:PropTypes.string
 };
 
-export default function AppWidgetSummaryEdit({ title, total, icon, edit,userid, color = 'primary', sx, ...other }) {
+export default function AppWidgetSummaryEdit({ title,livemarket, total, icon, edit,userid, color = 'primary', sx, ...other }) {
 
     const [openmodal,setOpenModal] = useState(false);
 
@@ -58,6 +58,7 @@ export default function AppWidgetSummaryEdit({ title, total, icon, edit,userid, 
       }}
       {...other}
     >
+    <Typography variant="h6">{livemarket}</Typography>
       <IconWrapperStyle
         sx={{
           color: (theme) => theme.palette[color].dark,
@@ -71,7 +72,7 @@ export default function AppWidgetSummaryEdit({ title, total, icon, edit,userid, 
         <Iconify icon={icon} width={24} height={24} />
       </IconWrapperStyle>
 
-      <Typography variant="h3">{title === 'Naira Wallet Balance' ? fShortenNumber(total) : total}</Typography>
+      <Typography variant="h4">{title === 'Naira Wallet Balance' ? fShortenNumber(total) : total}</Typography>
 
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         {title}
