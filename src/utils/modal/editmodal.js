@@ -1,12 +1,16 @@
 import * as React from 'react';
 import { reactLocalStorage } from 'reactjs-localstorage';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography';
+import { Stack } from '@mui/material';
 import Modal from '@mui/material/Modal';
 import { setNestedObjectValues } from 'formik';
+import Iconify from '../../components/Iconify'
+
 
 
 
@@ -15,7 +19,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 600,
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -24,13 +28,17 @@ const style = {
 
 
 
-export default function BasicModal({statemodal,modifyOpen,modalTitle,userid}) {
+export default function BasicModal({statemodal,modifyOpen,modalTitle,userid,marketrate,jupitrate}) {
   const [open, setOpen] = React.useState(false);
+  const [disablebtn,setdisablebtn] = React.useState(false)
   const [value, setValue] = React.useState(0);
+  const [usdvalue, setusdvalue] = React.useState(0);
+  const [nairavalue, setnairavalue] = React.useState(0);
   const handleClose = () => modifyOpen(!statemodal);
   const BaseUrl = process.env.REACT_APP_ADMIN_URL
   const handleCreditWallet = async ()=>{
-   
+   console.log(value)
+   setdisablebtn(true)
     await axios({
       url:`${BaseUrl}/admin/manual/wallet/credit`,
       method:"POST",
@@ -42,7 +50,19 @@ export default function BasicModal({statemodal,modifyOpen,modalTitle,userid}) {
 
     })
     .then((res)=>{
-      console.log(res.data)
+      console.log(res.data);
+      if(res.data.status){
+        setdisablebtn(false);
+        Swal.fire({
+          title: 'Message!',
+          text: res.data.message,
+          icon: 'success',
+          confirmButtonText: 'ok'
+        });
+
+        modifyOpen(!statemodal)
+      }
+
     })
     .catch((err)=>{
       console.log(err.response);
@@ -51,6 +71,30 @@ export default function BasicModal({statemodal,modifyOpen,modalTitle,userid}) {
 
   const handeChange= (e)=>{
     setValue(e.target.value)
+  }
+  const handeChangeNaira=(e)=>{
+    setnairavalue(e.target.value);
+    const newjupitrate = parseFloat(jupitrate);
+    const newmarketrate = parseFloat(marketrate);
+    const usdequi = parseFloat(e.target.value) / newjupitrate
+    const btcequi = parseFloat(usdequi/newmarketrate).toFixed(8)
+    setusdvalue(usdequi);
+    setValue(btcequi)
+  }
+  const handeChangeBtc=(e)=>{
+    
+  }
+  const handeChangeUsd=(e)=>{
+    setusdvalue(e.target.value);
+    const newjupitrate = parseFloat(jupitrate);
+    const newmarketrate = parseFloat(marketrate);
+    const nairaequi = parseFloat(e.target.value) * newjupitrate;
+    setnairavalue(nairaequi);
+    const btcequi = parseFloat(e.target.value/newmarketrate).toFixed(8);
+    console.log(btcequi)
+    setValue(btcequi)
+
+    
   }
   return (
     <div>
@@ -61,21 +105,67 @@ export default function BasicModal({statemodal,modifyOpen,modalTitle,userid}) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+         <Typography id="modal-modal-title" variant="h6" component="h2">
             {modalTitle}
           </Typography>
+          {modalTitle === "BTC Wallet Balance" || modalTitle === "USDT Wallet Balance"  ?
+              <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2} mt={4}>
+                <TextField
+                    required
+                    id="outlined-required"
+                    label={modalTitle === "USDT Wallet Balance"? "USDT Amount" : "BTC Amount"}
+                    value={value || ''}
+                    
+                    fullWidth
+                    onChange={handeChangeBtc}
+                    type="number"
+                  />   
+                  <Iconify icon="carbon:arrows-horizontal" width={50} height={50}/>
+                  <TextField
+                    required
+                    id="outlined-required"
+                    
+                    label="USD Amount"
+                    value={usdvalue|| ''}
+                    fullWidth
+                    onChange={handeChangeUsd}
+                    type="number"
+                  /> 
+                  <Iconify icon="carbon:arrows-horizontal" width={50} height={50}/>
+                  <TextField
+                    required
+                    id="outlined-required"
+                    label="Naira Amount"
+                    value={nairavalue|| ''}
+                    fullWidth
+                    onChange={handeChangeNaira}
+                    type="number"
+                  />   
+            </Stack>
+                    :
+
+                    <TextField
+                    required
+                    id="outlined-required"
+                    label="Naira Amount"
+                    value={nairavalue|| ''}
+                    style={{marginTop:20}}
+                    onChange={handeChange}
+                    type="number"
+                  />  
+
+        
+        
+        
+        }
+       
+
+
+
+         
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              <TextField
-              required
-              id="outlined-required"
-              label="Input Wallet Amount To Be creditted"
-              defaultValue={value}
-              placeholder='Enter BTC Amount'
-              fullWidth
-              onChange={handeChange}
-              type="number"
-            />
-            <Button variant="outlined" disableElevation style={{marginTop:10}} onClick={()=>handleCreditWallet()}>Credit User Wallet</Button>
+              
+            <Button variant="outlined" disableElevation style={{marginTop:10}} disabled={disablebtn} onClick={()=>handleCreditWallet()}>Credit User Wallet</Button>
             
            
         </Typography>

@@ -35,7 +35,7 @@ AppWidgetSummaryEdit.propTypes = {
   edit:PropTypes.string
 };
 
-export default function AppWidgetSummaryEdit({ title,livemarket, total, icon, edit,userid, color = 'primary', sx, ...other }) {
+export default function AppWidgetSummaryEdit({ title,livemarket,livemarketdata,jupitrate, total, icon, edit,userid, color = 'primary', sx, ...other }) {
 
     const [openmodal,setOpenModal] = useState(false);
 
@@ -46,7 +46,7 @@ export default function AppWidgetSummaryEdit({ title,livemarket, total, icon, ed
   return (
       <>
       
-    {openmodal &&<Modal statemodal={openmodal} modifyOpen={setOpenModal} modalTitle={title} userid={userid}/>}
+    {openmodal &&<Modal statemodal={openmodal} modifyOpen={setOpenModal} modalTitle={title} userid={userid} marketrate={livemarketdata} jupitrate={jupitrate}/>}
     <Card
       sx={{
         py: 5,

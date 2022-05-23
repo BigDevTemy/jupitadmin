@@ -130,6 +130,9 @@ export default function User() {
 
   const [marketdata,setmarketdata] = useState([])
 
+  const [jupitbtcbuyrate,setjupitbtcbuyrate] = useState(0);
+  const [jupitusdtbuyrate,setjupitusdtbuyrate] = useState(0);
+
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const { id } = useParams();
@@ -147,6 +150,8 @@ export default function User() {
     })
     .then((res)=>{
       console.log(res.data)
+      setjupitbtcbuyrate(res.data.rate[0].btc[0].buy);
+      setjupitusdtbuyrate(res.data.rate[0].usdt[1].buy);
       setbtcbalance(res.data.detail.btc_wallet[0].balance.$numberDecimal);
       setusdtbalance(res.data.detail.usdt_wallet[0].balance.$numberDecimal);
       setnairabalance(res.data.detail.naira_wallet[0].balance.$numberDecimal);
@@ -159,7 +164,7 @@ export default function User() {
         settwofactor(res.data.twofactor);
       setbigLoader(false);
 
-      console.log('naira',accountnumber)
+      
 
     })
     .catch((err)=>{
@@ -284,10 +289,10 @@ export default function User() {
 
       <Grid container spacing={3}>
             <Grid item xs={12} sm={6} md={3}>
-                <AppWidgetSummaryEdit title="BTC Wallet Balance" color="warning" total={btcbalance} icon={'cryptocurrency:btc'} edit={'bx:edit'} userid={id} livemarket={btcmarketpricedisplay}  />
+                <AppWidgetSummaryEdit title="BTC Wallet Balance" color="warning" total={btcbalance} icon={'cryptocurrency:btc'} edit={'bx:edit'} userid={id} livemarket={btcmarketpricedisplay} livemarketdata={btcmarketprice} jupitrate={jupitbtcbuyrate} />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-                <AppWidgetSummaryEdit title="USDT Wallet Balance"  color="success" total={usdtbalance} icon={'cryptocurrency:usdt'} edit={'bx:edit'} userid={id}  livemarket={usdtmarketpricedisplay}/>
+                <AppWidgetSummaryEdit title="USDT Wallet Balance"  color="success" total={usdtbalance} icon={'cryptocurrency:usdt'} edit={'bx:edit'} userid={id}  livemarket={usdtmarketpricedisplay} livemarketdata={usdtmarketprice} jupitrate={jupitusdtbuyrate}/>
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
                 <AppWidgetSummaryEdit title="Naira Wallet Balance" total={nairabalance} icon={'tabler:currency-naira'} edit={'bx:edit'} userid={id}/>
