@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
@@ -45,8 +45,17 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
+  const navigate = useNavigate
 
   const isDesktop = useResponsive('up', 'lg');
+
+  const handlelogout = ()=>{
+  
+    reactLocalStorage.clear();
+    window.location = "/"
+   
+
+  }
 
   useEffect(() => {
     if (isOpenSidebar) {
@@ -103,7 +112,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             </Typography>
           </Box>
 
-          <Button href="#" target="" variant="contained">
+          <Button  target="" variant="contained" onClick={()=>{handlelogout()}}>
             Logout
           </Button>
         </Stack>

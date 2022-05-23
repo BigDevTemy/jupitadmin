@@ -1,6 +1,6 @@
 // @mui
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Typography } from '@mui/material';
@@ -35,18 +35,23 @@ AppWidgetSummaryEdit.propTypes = {
   edit:PropTypes.string
 };
 
-export default function AppWidgetSummaryEdit({ title,livemarket,livemarketdata,jupitrate, total, icon, edit,userid, color = 'primary', sx, ...other }) {
+export default function AppWidgetSummaryEdit({ title,refreshPage,refresh,livemarket,livemarketdata,jupitrate, total, icon, edit,userid, color = 'primary', sx, ...other }) {
 
     const [openmodal,setOpenModal] = useState(false);
-
+    const [completed,setcompleted] = useState(false)
+    
     const handleClick = ()=>{
         setOpenModal(true);
     }
+    useEffect(()=>{
+    
+        refreshPage(!refresh)
+    },[completed])
 
   return (
       <>
       
-    {openmodal &&<Modal statemodal={openmodal} modifyOpen={setOpenModal} modalTitle={title} userid={userid} marketrate={livemarketdata} jupitrate={jupitrate}/>}
+    {openmodal &&<Modal statemodal={openmodal} modifyOpen={setOpenModal} modalTitle={title} userid={userid} marketrate={livemarketdata} jupitrate={jupitrate} page={setcompleted}/>}
     <Card
       sx={{
         py: 5,
